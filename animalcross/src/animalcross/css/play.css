@@ -1,0 +1,28 @@
+Label {
+	-fx-font-size: 15pt;
+	-fx-padding: 10 20 10 20;
+}
+
+Button {
+	-fx-font-size: 13pt;
+	-fx-text-fill: "skyBlue";
+	
+	-fx-border-insets: 105;
+}
+
+.login {
+	-fx-background-color: "lightGrey";
+	-fx-text-fill: "Black";
+}
+
+.main {
+	-fx-background-image: url("../images/background.jpg"); 
+	-fx-pref-width: 1920;
+	-fx-pref-height: 1920;
+}
+
+.character_box {
+	-fx-background-color: "lightGrey";
+	-fx-pref-width: 150;
+	-fx-pref-height: 150;
+}
