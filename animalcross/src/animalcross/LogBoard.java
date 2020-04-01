@@ -17,11 +17,12 @@ public class LogBoard extends Board{
 	public Label getMessageLabel(String message) {
 		Label msg = new Label(message);
 		msg.setStyle("-fx-text-fill: \"white\"; -fx-font-size: 10pt;");
+		msg.setWrapText(true);
 		return msg;
 	}
 	
 	public void setMessage(MessageComponent messagecomp) {
-		Label messageLabel = getMessageLabel(messagecomp.getSender()+": "+messagecomp.getMessage());
+		Label messageLabel = getMessageLabel(messagecomp.getSender()+": "+(String)messagecomp.getObject("Message"));
 		HBox hbox = new HBox(messageLabel);
 		Platform.runLater(new Runnable() {
     	    @Override

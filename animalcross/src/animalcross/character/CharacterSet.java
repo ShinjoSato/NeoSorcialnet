@@ -20,7 +20,7 @@ public abstract class CharacterSet implements Serializable {
 		this.speechVBox = new VBox();
 		model = (VBox) getObject("model");
 		this.name = name;
-		setSpeech("Hello, world");
+		this.setSpeech("Hello, world");
 		model.getChildren().add(speechVBox);
 	}
 	
@@ -33,11 +33,13 @@ public abstract class CharacterSet implements Serializable {
 		else speechVBox.getChildren().clear();
 
 		Label nameLabel = (Label) getObject("name");
+		nameLabel.setWrapText(true);
 		speechVBox.getChildren().add(nameLabel);
 		
 		bubbleSpeech = (VBox) getObject("bubbleSpeech");
 		
 		Label speech = new Label(text);
+		speech.setWrapText(true);
 		bubbleSpeech.getChildren().add(speech);
 
 		speechVBox.getChildren().add(bubbleSpeech);
@@ -78,6 +80,10 @@ public abstract class CharacterSet implements Serializable {
 		this.model.setLayoutY(y);
 	}
 	
+	public String getPoint() {
+		return String.valueOf(getX()+","+getY());
+	}
+	
 	public double getX() {
 		return this.model.getLayoutX();
 	}
@@ -94,4 +100,6 @@ public abstract class CharacterSet implements Serializable {
 		this.name = name;
 		setSpeech("");
 	}
+	
+	public abstract String getCharacterName();
 }

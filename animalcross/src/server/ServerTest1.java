@@ -13,34 +13,24 @@ import commom.MessageComponent;
 public class ServerTest1 {
 
 	public static void main(String[] args) throws IOException {
-		System.out.println("Start server.");
+		final int PORT = 50000;
 		try {
-			ServerSocket serverSocket =new ServerSocket(50000);
-			System.out.println("----- connection built -----");
-			//receive information from client
-			while(true) {
-					
+			ServerSocket serverSocket =new ServerSocket(PORT);
+			System.out.println("----- start server. connection is built. PORT number is "+PORT+" -----");
+			while(true) {	
 				Socket socket = serverSocket.accept();
-				/**
-				 * - receiver
-				 * replace String with ManageComponent
-				 */
+
 				ObjectInputStream reciever = new ObjectInputStream(socket.getInputStream());
-				MessageComponent messagecomp = (MessageComponent)reciever.readObject();// messagecomp = userName
+				Object object = reciever.readObject();
+				MessageComponent messagecomp = (MessageComponent)object;
 				
-				/**
-				 * - sender
-				 * Not replace String with ManageComponent
-				 */
 				ObjectOutputStream sender = new ObjectOutputStream(socket.getOutputStream());
 				sender.writeObject(messagecomp);
-				System.out.println("### Welcome "+messagecomp+" ###");
-				ServerThread serverthread = new ServerThread(socket, messagecomp.getSender()/*, messagecomp.getCharacter()*/);
-				ServerHashMap.setServerThread(messagecomp.getSender(), serverthread);//ServerHashMap.setServerThread(messagecomp, serverthread);
+				ServerThread serverthread = new ServerThread(socket, messagecomp.getUserInfo());
+				ServerHashMap.setServerThread(messagecomp.getUserInfo(), serverthread);
 				serverthread.start();
 			} 
 		}catch (Exception e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			
 		}

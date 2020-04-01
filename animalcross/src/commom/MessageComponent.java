@@ -5,33 +5,51 @@ import animalcross.character.CharacterSet;
 import animalcross.character.Sizue;
 import animalcross.character.Villager;
 
-@SuppressWarnings("serial")
-public class MessageComponent implements Serializable {
-//	private CharacterSet character;
-	private String user;
-	private String message;
+public class MessageComponent implements Serializable{
+	final private String message;
+	final private UserInfo userinfo;
+	final private String messagetype;
+	
+	public MessageComponent(UserInfo userinfo, String message, String messagetype) {
+		this.userinfo = userinfo;
+		this.message = message;
+		this.messagetype = messagetype;
+	}
+	
+	public MessageComponent(UserInfo user, String message) {
+		this(user, message, "message");
+	}	
 	
 	public MessageComponent(String user, String message) {
-		//this.character = new Villager(user);
-		this.user = user;
-		this.message = message;
+		this(new UserInfo(user, "none"), message);
 	}
 	
-	/*public MessageComponent(String user, String message, CharacterSet character) {
-		this.character = character;
-		this.user = user;
-		this.message = message;
-	}*/
+	public Object getObject(String objectname) {
+		Object object = new Object();
+		switch(objectname) {
+			case "Message":		object = this.message;					break;
+			case "Character":	object = this.userinfo.getCharacter();	break;
+			case "UserInfo":	object = this.userinfo;					break;
+			case "Sender":		object = this.userinfo.getUserName();	break;
+			case "MessageType":	object = this.messagetype;				break;
+		}
+		return object;
+	}
 	
 	public String getSender() {
-		return this.user;
+		return this.userinfo.getUserName();
 	}
 	
-	public String getMessage() {
-		return this.message;
+	
+	public String getCharacter() {
+		return this.userinfo.getCharacter();
 	}
 	
-	/*public CharacterSet getCharacter() {
-		return this.character;
-	}*/
+	public UserInfo getUserInfo() {
+		return this.userinfo;
+	}
+	
+	public String toString() {
+		return "User:["+userinfo+"], MessageType: "+messagetype+", Message: "+message;
+	}
 }

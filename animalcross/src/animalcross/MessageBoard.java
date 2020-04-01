@@ -20,6 +20,7 @@ public class MessageBoard extends Board {
 	public Label getMessageLabel(String message) {
 		Label msg = new Label(message);
 		msg.setStyle("-fx-text-fill: \"white\"; -fx-font-size: 15pt;");
+		msg.setWrapText(true);
 		return msg;
 	}
 	
@@ -32,11 +33,11 @@ public class MessageBoard extends Board {
 	}
 	
 	public void setMessage(MessageComponent messagecomp) {
-		System.out.println("setMessage: "+messagecomp.getMessage());
+		System.out.println("setMessage: "+(String)messagecomp.getObject("Message"));
 		Label name = new Label(messagecomp.getSender());//(Label) character.getObject("name");
 		name.setTranslateY(-3);
 		name.setStyle("-fx-background-color: #87cefa; -fx-text-fill: white; -fx-padding: 2 5 2 5; -fx-background-radius: 15; ");
-		Label messageLabel = getMessageLabel(messagecomp.getMessage());
+		Label messageLabel = getMessageLabel((String)messagecomp.getObject("Message"));
 		HBox hbox = new HBox(name, messageLabel);
 		Platform.runLater(new Runnable() {
     	    @Override
@@ -44,6 +45,5 @@ public class MessageBoard extends Board {
     	    	getBoard().getChildren().add(hbox);
     	    }
 		});
-		//this.board.getChildren().add(hbox);
 	}
 }
