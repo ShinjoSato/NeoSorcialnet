@@ -23,18 +23,24 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.cell.TextFieldListCell;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.control.TextArea;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -57,7 +63,7 @@ public class Main extends Application {
 	private String IPAddress = "10.114.205.7";
 	private String PORT = "50000";
 	private Socket socket;
-	protected static Pane p;
+	protected static AnchorPane p;
 	private HBox ipBox;
 	private boolean isLoggedIn;
 	 
@@ -67,10 +73,11 @@ public class Main extends Application {
 		isLoggedIn = false;
 		friendsset = new HashMap<String, CharacterSet>();
 			
-		p = new Pane();
+		p = new AnchorPane();
 		Scene scene = new Scene(p, 400, 300);
 		primaryStage.setScene(scene);
 		primaryStage.show();
+		
 	 		
 		characterbox = new Villager("Shinjo");
 			
@@ -139,6 +146,48 @@ public class Main extends Application {
 
 		p.getChildren().add(textHBox);
 		p.getChildren().add(createIPAddressInput(IPAddress, PORT, "Shinjo"));
+		
+		
+		
+		/**
+		 * Menu bar is from here.
+		 */
+		 MenuBar menuBar = new MenuBar();
+		 menuBar.setStyle("-fx-background-color:  #FFFACD;");
+		 AnchorPane.setLeftAnchor(p, 1.0);
+		 AnchorPane.setRightAnchor(p, 1.0);
+		 //menuBar.setPrefWidth(primaryStage.getWidth());
+		 
+	        final VBox vbox = new VBox();
+	        //vbox.setPrefSize(1200,100);
+	        vbox.setAlignment(Pos.CENTER);
+	        vbox.setStyle("-fx-background-color: black;");
+	        vbox.setSpacing(10);
+	        vbox.setPadding(new Insets(0, 10, 0, 10));
+	        //vbox.getChildren().addAll(name, binName, pic, description);
+	 
+	        // --- Menu File
+	        Menu menuFile = new Menu("File");
+	        MenuItem add = new MenuItem("Shuffle");
+	        add.setOnAction((ActionEvent t) -> {
+	            //shuffle();
+	            vbox.setVisible(true);
+	        });        
+	 
+	        menuFile.getItems().addAll(add);
+	 
+	        // --- Menu Edit
+	        Menu menuEdit = new Menu("Edit");
+	        MenuItem select_character = new MenuItem("Character");
+	        menuEdit.getItems().add(select_character);
+	        
+	        // --- Menu View
+	        Menu menuView = new Menu("View");
+	        
+	        menuBar.getMenus().addAll(menuFile, menuEdit, menuView);
+	        p.getChildren().addAll(menuBar, vbox);
+	        
+
 	}
 		
 	private void showBox(Object box) {
