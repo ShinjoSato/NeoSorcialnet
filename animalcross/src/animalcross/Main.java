@@ -74,120 +74,125 @@ public class Main extends Application {
 		friendsset = new HashMap<String, CharacterSet>();
 			
 		p = new AnchorPane();
-		Scene scene = new Scene(p, 400, 300);
-		primaryStage.setScene(scene);
-		primaryStage.show();
-		
-	 		
-		characterbox = new Villager("Shinjo");
-			
-		messageboard = new MessageBoard(350, 460);
-		VBox field = messageboard.getFrame(30, 400);
-		p.getChildren().add(field);
-			
-		logboard = new LogBoard(350, 250);
-		VBox log = logboard.getFrame(30, 100);
-		p.getChildren().add(log);
-			
 		p.setStyle("-fx-background-image: url(\"./animalcross/images/background.jpg\"); ");
-		p.getChildren().add(characterbox.getModel());
-	 
+		Scene scene = new Scene(p, 500, 700);
 		scene.setOnKeyPressed(e -> {
 			try {keyPressed(e);} 
 			catch (Exception e1) {}
 		});
+		
+		Image icon = new Image("./animalcross/images/haniwa_30x30.png");
+		primaryStage.getIcons().add(icon);
+		primaryStage.setTitle("Welcome to my chat room!");
+		primaryStage.setScene(scene);
+		primaryStage.show();
+	 		
+		characterbox = new Villager("Shinjo", 130.0, 130.0);
+			
+		messageboard = new MessageBoard(350, 460);
+		VBox messageboardVBox = messageboard.getFrame(30, 400);
+			
+		logboard = new LogBoard(350, 250);
+		VBox logboardVBox = logboard.getFrame(30, 100);
 			
 		text = new TextArea();
+		text.setPrefSize(370, 70);
 		text.addEventFilter(KeyEvent.KEY_PRESSED, new EventHandler<KeyEvent>() {
 			@Override
 			public void handle(KeyEvent ke) {
 				if (ke.getCode().equals(KeyCode.ENTER)) {
 				characterbox.setSpeech(text.getText());
 					if(!isLoggedIn) messageboard.setMessage(characterbox, text.getText());
-					try {
-						ObjectOutputStream sender = new ObjectOutputStream(socket.getOutputStream());
-						System.out.println("characterbox: "+characterbox.getName());
-						UserInfo user = new UserInfo(characterbox.getName(), "Villager");
-						MessageComponent messagecomp = new MessageComponent(user, text.getText());
-						sender.writeObject(messagecomp);
-					} catch (Exception e) {
-						e.printStackTrace();
+					else {
+						UserInfo userinfo = new UserInfo(characterbox.getName(), characterbox.getCharacterName());
+						sendMessageToServer( new MessageComponent(userinfo,  text.getText()) );
 					}
 					text.setText("");
 					ke.consume(); 
 				}			
 			}
 		});
-		text.setPrefSize(370, 70);
-
 		HBox inputTextHBox = new HBox(text);
 		inputTextHBox.setVisible(false);
-			
 		HBox textHBox = new HBox();
-		textHBox.setLayoutX(600);
-		textHBox.setLayoutY(800);
+		/**
+		 * Position
+		 * - Large Window (600, 800)
+		 * - Small Window (20, 600)
+		 */
+		textHBox.setLayoutX(20);
+		textHBox.setLayoutY(600);
 		textHBox.getChildren().add(inputTextHBox);
 			
 		Button button = new Button();
-		button.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			public void handle(ActionEvent event) {
-				// TODO Auto-generated method stub
-				if(inputTextHBox.isVisible()) {
-					inputTextHBox.setVisible(false);
-				}else {
-					inputTextHBox.setVisible(true);
-				}
-			}
-		});
 		button.setPrefSize(70.0, 70.0);
 		button.setStyle("-fx-background-color: none; -fx-background-image: url(\"./animalcross/images/tubukichi_70x59.png\"); -fx-background-repeat: no-repeat;");
+		button.setOnAction(act -> showBox(inputTextHBox));
 		textHBox.getChildren().add(button);
 
-		p.getChildren().add(textHBox);
-		p.getChildren().add(createIPAddressInput(IPAddress, PORT, "Shinjo"));
-		
-		
-		
-		/**
-		 * Menu bar is from here.
-		 */
+		p.getChildren().addAll(
+			characterbox.getModel(),
+			createIPAddressInput(IPAddress, PORT, "Shinjo"),
+			getMenuBar(),
+			logboardVBox,
+			messageboardVBox,
+			textHBox
+		);
+	}
+	
+	/**
+	 * Menu bar is from here.
+	 */
+	public MenuBar getMenuBar() {
 		 MenuBar menuBar = new MenuBar();
-		 menuBar.setStyle("-fx-background-color:  #FFFACD;");
-		 AnchorPane.setLeftAnchor(p, 1.0);
-		 AnchorPane.setRightAnchor(p, 1.0);
-		 //menuBar.setPrefWidth(primaryStage.getWidth());
+		 menuBar.setUseSystemMenuBar(true);
 		 
-	        final VBox vbox = new VBox();
-	        //vbox.setPrefSize(1200,100);
-	        vbox.setAlignment(Pos.CENTER);
-	        vbox.setStyle("-fx-background-color: black;");
-	        vbox.setSpacing(10);
-	        vbox.setPadding(new Insets(0, 10, 0, 10));
-	        //vbox.getChildren().addAll(name, binName, pic, description);
-	 
-	        // --- Menu File
-	        Menu menuFile = new Menu("File");
-	        MenuItem add = new MenuItem("Shuffle");
-	        add.setOnAction((ActionEvent t) -> {
-	            //shuffle();
-	            vbox.setVisible(true);
-	        });        
-	 
-	        menuFile.getItems().addAll(add);
-	 
-	        // --- Menu Edit
-	        Menu menuEdit = new Menu("Edit");
-	        MenuItem select_character = new MenuItem("Character");
-	        menuEdit.getItems().add(select_character);
-	        
-	        // --- Menu View
-	        Menu menuView = new Menu("View");
-	        
-	        menuBar.getMenus().addAll(menuFile, menuEdit, menuView);
-	        p.getChildren().addAll(menuBar, vbox);
-	        
+	     // --- Menu File
+	     Menu Edit = new Menu("Edit");
+	     MenuItem Edit_Sizue = new MenuItem("Sizue", new ImageView("./animalcross/character/images/sizue_18x30.png"));
+	     Edit_Sizue.setOnAction(e -> renewCharacter("Sizue", characterbox.getName()));
+	     MenuItem Edit_Villager = new MenuItem("Villager", new ImageView("./animalcross/character/images/murabito_30x30.png"));
+	     Edit_Villager.setOnAction(e -> renewCharacter("Villager", characterbox.getName()));
+	     Edit.getItems().addAll(Edit_Sizue, Edit_Villager);
+	     
+	     // --- Menu sub window
+	     Menu menu_board = new Menu("Panel");
+	     MenuItem board_log = new MenuItem("Log Board");
+	     board_log.setOnAction(e->{ logboard.setVisible( (logboard.isVisible())? false: true ); });
+	     MenuItem board_message = new MenuItem("Message Board");
+	     board_message.setOnAction(e->{ messageboard.setVisible( (messageboard.isVisible())? false: true ); });
+	     menu_board.getItems().addAll(board_log, board_message);
+	     
+	     menuBar.getMenus().addAll(Edit, menu_board);
+	     return menuBar;
+	}
+	
+	public void renewCharacter(String character, String username) {
+		System.out.println("renewCharacter");
+		double x = characterbox.getX(), y = characterbox.getY();
+		p.getChildren().remove(characterbox.getModel());
 
+		switch(character) {
+			case "Villager": 	characterbox = new Villager(username); 	break;
+			case "Sizue": 		characterbox = new Sizue(username); 	break;
+		}
+		
+		characterbox.setPoint(x, y);
+		p.getChildren().add(characterbox.getModel());
+		
+		if(isLoggedIn) {
+			UserInfo userinfo = new UserInfo(characterbox.getName(), characterbox.getCharacterName());
+			sendMessageToServer( new MessageComponent(userinfo, "change character design", "character") );
+		}
+	}
+	
+	private void sendMessageToServer(MessageComponent messagecomp) {
+		try {
+			ObjectOutputStream sender = new ObjectOutputStream(socket.getOutputStream());
+			sender.writeObject(messagecomp);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 		
 	private void showBox(Object box) {
@@ -198,15 +203,15 @@ public class Main extends Application {
 	private void keyPressed(KeyEvent e) throws Exception {
 		try {
 			String characterpoint = null;
+			int distance = 15;
 			switch(e.getCode()) {
-				case LEFT: 	characterbox.setX(characterbox.getX()-10); break;
-				case RIGHT:	characterbox.setX(characterbox.getX()+10); break;
-				case UP: 	characterbox.setY(characterbox.getY()-10); break;
-				case DOWN: 	characterbox.setY(characterbox.getY()+10); break;
+				case LEFT: 	characterbox.setX(characterbox.getX() - distance); break;
+				case RIGHT:	characterbox.setX(characterbox.getX() + distance); break;
+				case UP: 	characterbox.setY(characterbox.getY() - distance); break;
+				case DOWN: 	characterbox.setY(characterbox.getY() + distance); break;
 				default: break;
 			}
 			if(isLoggedIn) {
-				System.out.println(characterbox);
 				ObjectOutputStream sender = new ObjectOutputStream(socket.getOutputStream());
 				UserInfo user = new UserInfo(characterbox.getName(), "Villager");
 				characterpoint = characterbox.getPoint();
@@ -223,7 +228,8 @@ public class Main extends Application {
 		System.out.println("----- connect to server -----");
 		try {
 			socket = new Socket(ipAddress, Integer.parseInt(portNumber));
-			UserInfo user = new UserInfo(userName, "Villager");
+
+			UserInfo user = new UserInfo(userName, characterbox.getCharacterName());
 			MessageComponent messagecomp = new MessageComponent(user, "requect connection");
 			ObjectOutputStream sender = new ObjectOutputStream(socket.getOutputStream());
 			sender.writeObject(messagecomp);
@@ -282,8 +288,13 @@ public class Main extends Application {
 		HBox ipHBox = new HBox(inputVBox, serverButton);
 		showIpText.setOnAction(e -> showBox(ipHBox));
 		ipBox = new HBox(ipHBox, showIpText);
-			
-		ipBox.setLayoutX(1000.0);
+		
+		/**
+		 * Position
+		 * - Large Window: (1000.0, 10.0)
+		 * - Small Window: (100.0, 10.0)
+		 */
+		ipBox.setLayoutX(100.0);
 		ipBox.setLayoutY(10.0);
 			
 		return ipBox;
@@ -299,26 +310,62 @@ public class Main extends Application {
 			
 		VBox ip_vbox = new VBox(resetsan, ip_label, name_label);
 		ip_vbox.setAlignment(Pos.CENTER);
-		ip_vbox.setLayoutX(1200.0);
-		ip_vbox.setLayoutY(200.0);
+		/**
+		 * Position
+		 * - Large Widow: (1200.0, 200.0)
+		 * - Small Window (300.0, 20.0)
+		 */
+		ip_vbox.setLayoutX(300.0);
+		ip_vbox.setLayoutY(20.0);
 			
 		characterbox.setName(username);
 		return ip_vbox;
 	}
 		
 	public static void enterFriend(MessageComponent message) {
-		CharacterSet characterset = new Villager((String)message.getObject("Sender"));
+		System.out.println(message);
+		CharacterSet characterset = replaceCharacter((String)message.getObject("Sender"), message.getCharacter());
+		friendsset.put((String)message.getObject("Sender"), characterset);
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
-				p.getChildren().add(characterset.getModel());
+				p.getChildren().add( friendsset.get((String)message.getObject("Sender")).getModel() );
+				//p.getChildren().add( (VBox)friendsset.get((String)message.getObject("Sender")).getObject("Model") );
 			}
 		});
-		friendsset.put((String)message.getObject("Sender"), characterset);
+	}
+	
+	public static CharacterSet replaceCharacter(String name, String character) {
+		CharacterSet characterset = null;
+		switch(character) {
+			case "Villager": 	characterset = new Villager(name); 	break;
+			case "Sizue": 		characterset = new Sizue(name); 	break;
+		}
+		return characterset;
+	}
+	
+	public static void changeFriendsCharacter(MessageComponent messagecomp) {
+		System.out.println(messagecomp.getObject("Sender")+"キャラクターを変更しました");
+		String friend = (String)messagecomp.getObject("Sender");
+		double x = friendsset.get(friend).getX(), y = friendsset.get(friend).getY();
+		removeFriend(friend);
+		enterFriend(messagecomp);
+		friendsset.get(friend).setPoint(x, y);
 	}
 		
 	public static HashMap<String, CharacterSet> getFriendsSet(){
 		return friendsset;
+	}
+	
+	public static void removeFriend(String friend) {
+		VBox friendVBox = friendsset.get(friend).getModel();
+		Platform.runLater(new Runnable() {
+    	    @Override
+    	    public void run() {
+    	    	p.getChildren().remove(friendVBox);
+    	    }
+		});
+		friendsset.remove(friend);
 	}
 		
 	public static void setFriendBubbleSpeech(MessageComponent messagecomp) {

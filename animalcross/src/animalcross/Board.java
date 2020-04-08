@@ -32,6 +32,14 @@ public abstract class Board {
 	    frame.setPrefWidth(width);
 	}
 	
+	public boolean isVisible() {
+		return this.frame.isVisible();
+	}
+	
+	public void setVisible(boolean isVisible) {
+		this.frame.setVisible(isVisible);
+	}
+	
 	public VBox getFrame(double layoutX, double layoutY) {
 		frame.setLayoutX(layoutX);
 		frame.setLayoutY(layoutY);

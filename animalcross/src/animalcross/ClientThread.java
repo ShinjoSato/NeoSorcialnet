@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.net.Socket;
 
+import animalcross.character.CharacterSet;
 import commom.MessageComponent;
 import commom.UserInfo;
 
@@ -47,7 +48,7 @@ public class ClientThread extends Thread{
 				Main.setMessageOnMessageBoard(messagecomp);
 				break;
 			case "action":
-				System.out.println("receive action:"+messagecomp.getObject("Sender")+" -> "+messagecomp.getObject("Message"));
+				//System.out.println("receive action:"+messagecomp.getObject("Sender")+" -> "+messagecomp.getObject("Message"));
 				String sender_name = (String)messagecomp.getObject("Sender");
 				if( Main.getFriendsSet().containsKey(sender_name)) {
 					String point = (String)messagecomp.getObject("Message");
@@ -57,6 +58,16 @@ public class ClientThread extends Thread{
 					Main.getFriendsSet().get(sender_name).setPoint(x, y);
 				}
 				break;
+			case "character":
+				/**
+				 * 2020-04-04
+				 * I'll modify here to change friends' character design.
+				 */
+				System.out.println(messagecomp);
+				if(!client.getUserName().equals((String)messagecomp.getObject("Sender"))) {
+					Main.changeFriendsCharacter(messagecomp);
+				}
+				//CharacterSet friend = (CharacterSet) Main.getFriendsSet().get((String)messagecomp.getObject("Sender"));
 			default: break;
 		}
 	}
