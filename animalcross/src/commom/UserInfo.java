@@ -2,7 +2,7 @@ package commom;
 
 import java.io.Serializable;
 
-public class UserInfo  implements Serializable{
+public class UserInfo implements Serializable{
 	final private String name;
 	final private String character;
 	

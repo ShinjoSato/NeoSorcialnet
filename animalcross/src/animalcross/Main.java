@@ -1,6 +1,10 @@
 package animalcross;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -13,7 +17,9 @@ import java.util.List;
 import animalcross.character.CharacterSet;
 import animalcross.character.Sizue;
 import animalcross.character.Villager;
+import commom.Mail;
 import commom.MessageComponent;
+import commom.SaveData;
 import commom.UserInfo;
 import javafx.application.Application;
 import javafx.application.Platform;
@@ -85,15 +91,18 @@ public class Main extends Application {
 		primaryStage.getIcons().add(icon);
 		primaryStage.setTitle("Welcome to my chat room!");
 		primaryStage.setScene(scene);
+		
+		//primaryStage.setOpacity(0.7);
+		
 		primaryStage.show();
 	 		
 		characterbox = new Villager("Shinjo", 130.0, 130.0);
 			
 		messageboard = new MessageBoard(350, 460);
-		VBox messageboardVBox = messageboard.getFrame(30, 400);
+		VBox messageboardVBox = messageboard.getFrame(0, 250);
 			
 		logboard = new LogBoard(350, 250);
-		VBox logboardVBox = logboard.getFrame(30, 100);
+		VBox logboardVBox = logboard.getFrame(0, 0);
 			
 		text = new TextArea();
 		text.setPrefSize(370, 70);
@@ -129,15 +138,34 @@ public class Main extends Application {
 		button.setStyle("-fx-background-color: none; -fx-background-image: url(\"./animalcross/images/tubukichi_70x59.png\"); -fx-background-repeat: no-repeat;");
 		button.setOnAction(act -> showBox(inputTextHBox));
 		textHBox.getChildren().add(button);
-
+		
+		
+		
 		p.getChildren().addAll(
 			characterbox.getModel(),
 			createIPAddressInput(IPAddress, PORT, "Shinjo"),
 			getMenuBar(),
 			logboardVBox,
 			messageboardVBox,
-			textHBox
+			textHBox,
+			createEmailInput()
 		);
+		
+		//createOtherStage(logboardVBox, 100,100);
+		saveData();
+		reloadSaveData();
+	}
+	
+	/**
+	 * 
+	 */
+	public void createOtherStage(VBox vbox, double width, double height) {
+		Pane pane = new AnchorPane();
+		pane.getChildren().add(vbox);
+		Scene scene = new Scene(pane, width, height);
+		Stage stage = new Stage();
+		stage.setScene(scene);
+		stage.show();
 	}
 	
 	/**
@@ -321,6 +349,49 @@ public class Main extends Application {
 		characterbox.setName(username);
 		return ip_vbox;
 	}
+	
+	private VBox createEmailInput() {
+		/**
+		 * Mail Input
+		 */
+		Label senderLabel = new Label("Sender:");
+		TextField senderField = new TextField("shinjo.software@gmail.com");
+		HBox senderHBox = new HBox(senderLabel, senderField);
+		
+		Label passLabel = new Label("Password:");
+		TextField passField = new TextField("Zxcvbnm12345sato");
+		HBox passHBox = new HBox(passLabel, passField);
+		
+		
+		Label addressLabel = new Label("To:");
+		TextField addressField = new TextField();
+		HBox addressHBox = new HBox(addressLabel, addressField);
+		
+		Label subjectLabel = new Label("Subject:");
+		TextField subjectField = new TextField();
+		HBox subjectHBox = new HBox(subjectLabel, subjectField);
+		
+		Label messageLabel = new Label("Message:");
+		TextArea messageText = new TextArea();
+		messageText.setPrefSize(370, 70);
+		HBox messageHBox = new HBox(messageLabel, messageText);
+		
+		Button mailButton = new Button("mail");
+		mailButton.setOnAction(e -> {
+			Mail.sendEMail(senderField.getText(), passField.getText(), addressField.getText(), subjectField.getText(), messageText.getText());
+		});
+		HBox buttonHBox = new HBox(mailButton);
+		buttonHBox.setAlignment(Pos.CENTER_RIGHT);
+		VBox mailVBox = new VBox(senderHBox, passHBox, addressHBox, subjectHBox, messageHBox, buttonHBox);
+		
+		Button isVisible = new Button();
+		isVisible.setOnAction(e-> showBox(mailVBox));
+		isVisible.setPrefSize(106, 90);
+		isVisible.setStyle("-fx-background-color: none; -fx-background-image: url(\"./animalcross/character/images/perio_106x90.png\"); -fx-background-repeat: no-repeat;");
+		
+		VBox all = new VBox(mailVBox, isVisible);
+		return all;
+	}
 		
 	public static void enterFriend(MessageComponent message) {
 		System.out.println(message);
@@ -378,6 +449,34 @@ public class Main extends Application {
 	    	    	friendsset.get(friend_name).setSpeech(message);
 	    	    }
 			});
+		}
+	}
+	
+	public static void saveData() {
+		try(FileOutputStream f = new FileOutputStream("data/renshu.dat");
+			BufferedOutputStream b = new BufferedOutputStream(f);
+			ObjectOutputStream out = new ObjectOutputStream(b)){
+	 
+			SaveData savedata = new SaveData(new UserInfo("UserName", "User Character"), "user ip address", "user port Number");
+			out.writeObject(savedata);
+		} catch ( IOException e ) {
+			e.printStackTrace();
+		}
+		System.out.println("saveData()");
+	}
+	
+	public static void reloadSaveData() {
+		try(FileInputStream f = new FileInputStream("data/renshu.dat");
+			BufferedInputStream b = new BufferedInputStream(f);
+			ObjectInputStream in = new ObjectInputStream(b)){
+	 
+			SaveData savedata = (SaveData) in.readObject();
+	 
+			System.out.println(savedata);
+		} catch ( IOException e ) {
+			e.printStackTrace();
+		} catch (ClassNotFoundException e) {
+			e.printStackTrace();
 		}
 	}
 }

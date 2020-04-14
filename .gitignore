@@ -1,1 +1,10 @@
 /.metadata/
+.metadata
+
+.animalcross/bin
+.animalcross/data/*.dat
+.animalcross/.setting
+.animalcross/.progect
+.animalcross/.gitignore
+
+.images
