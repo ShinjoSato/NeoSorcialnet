@@ -3,8 +3,8 @@
 
 /animalcross/bin/
 /animalcross/data/
-.animalcross/.setting
-.animalcross/.progect
-.animalcross/.gitignore
+/animalcross/.setting
+/animalcross/.progect
+/animalcross/.gitignore
 
-.images
+images
