@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.geometry.Insets?>
+
+<VBox id="body" xmlns:fx="http://javafx.com/fxml/1" stylesheets="@../css/login.css"  fx:controller="animalcross.Main" alignment="CENTER">
+	<VBox styleClass="main" alignment="CENTER" >
+	
+		<Label text="To" />
+		<TextField maxWidth="300.0"/>
+		
+		<Label text="Subject"/>
+		<TextField maxWidth="300.0"/>
+		
+		<Label text="Content"/>
+		<TextArea />
+		
+	</VBox>
+</VBox>

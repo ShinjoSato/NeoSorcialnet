@@ -14,6 +14,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import com.interactivemesh.jfx.importer.ImportException;
+import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
+
 import animalcross.character.CharacterSet;
 import animalcross.character.Sizue;
 import animalcross.character.Villager;
@@ -21,6 +24,7 @@ import commom.Mail;
 import commom.MessageComponent;
 import commom.SaveData;
 import commom.UserInfo;
+import commom.UserPrivacy;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -51,6 +55,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Sphere;
 import javafx.scene.layout.Pane;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -66,8 +71,7 @@ public class Main extends Application {
 	private static MessageBoard messageboard;
 	private static LogBoard logboard;
 	private TextArea text;
-	private String IPAddress = "10.114.205.7";
-	private String PORT = "50000";
+	private String IPAddress, PORT, Email, EmailPass;
 	private Socket socket;
 	protected static AnchorPane p;
 	private HBox ipBox;
@@ -78,9 +82,20 @@ public class Main extends Application {
 		System.out.println("----- main start -----");
 		isLoggedIn = false;
 		friendsset = new HashMap<String, CharacterSet>();
+		
+		System.out.println("----- load Save Data -----");
+		SaveData savedata = reloadSaveData();
+		System.out.println(savedata);
+		IPAddress = savedata.getIPAddress();
+		PORT = savedata.getPortNumber();
+		Email = savedata.getUserPrivacy().getEmail();
+		EmailPass = savedata.getUserPrivacy().getEmailPass();
 			
 		p = new AnchorPane();
 		p.setStyle("-fx-background-image: url(\"./animalcross/images/background.jpg\"); ");
+		
+		//Group group = new Group(p);
+		//Scene scene = new Scene(group, 500, 700);
 		Scene scene = new Scene(p, 500, 700);
 		scene.setOnKeyPressed(e -> {
 			try {keyPressed(e);} 
@@ -140,7 +155,6 @@ public class Main extends Application {
 		textHBox.getChildren().add(button);
 		
 		
-		
 		p.getChildren().addAll(
 			characterbox.getModel(),
 			createIPAddressInput(IPAddress, PORT, "Shinjo"),
@@ -152,13 +166,10 @@ public class Main extends Application {
 		);
 		
 		//createOtherStage(logboardVBox, 100,100);
-		saveData();
-		reloadSaveData();
+		//UserInfo userinfo = new UserInfo("Shinjo", "Sizue");
+		//saveData(new UserPrivacy(userinfo, Email, EmailPass), IPAddress, PORT);
 	}
 	
-	/**
-	 * 
-	 */
 	public void createOtherStage(VBox vbox, double width, double height) {
 		Pane pane = new AnchorPane();
 		pane.getChildren().add(vbox);
@@ -355,11 +366,11 @@ public class Main extends Application {
 		 * Mail Input
 		 */
 		Label senderLabel = new Label("Sender:");
-		TextField senderField = new TextField("shinjo.software@gmail.com");
+		TextField senderField = new TextField(Email);
 		HBox senderHBox = new HBox(senderLabel, senderField);
 		
 		Label passLabel = new Label("Password:");
-		TextField passField = new TextField("Zxcvbnm12345sato");
+		TextField passField = new TextField(EmailPass);
 		HBox passHBox = new HBox(passLabel, passField);
 		
 		
@@ -452,31 +463,31 @@ public class Main extends Application {
 		}
 	}
 	
-	public static void saveData() {
-		try(FileOutputStream f = new FileOutputStream("data/renshu.dat");
+	public static void saveData(UserPrivacy userpriv, String ipAddress, String portNumber) {
+		try(FileOutputStream f = new FileOutputStream("data/userdata.dat");
 			BufferedOutputStream b = new BufferedOutputStream(f);
 			ObjectOutputStream out = new ObjectOutputStream(b)){
 	 
-			SaveData savedata = new SaveData(new UserInfo("UserName", "User Character"), "user ip address", "user port Number");
+			SaveData savedata = new SaveData(userpriv, ipAddress, portNumber);
 			out.writeObject(savedata);
 		} catch ( IOException e ) {
 			e.printStackTrace();
 		}
-		System.out.println("saveData()");
 	}
 	
-	public static void reloadSaveData() {
-		try(FileInputStream f = new FileInputStream("data/renshu.dat");
+	public static SaveData reloadSaveData() {
+		try(FileInputStream f = new FileInputStream("data/userdata.dat");
 			BufferedInputStream b = new BufferedInputStream(f);
 			ObjectInputStream in = new ObjectInputStream(b)){
 	 
 			SaveData savedata = (SaveData) in.readObject();
-	 
-			System.out.println(savedata);
+			return savedata;
 		} catch ( IOException e ) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
+		return null;
 	}
+
 }
