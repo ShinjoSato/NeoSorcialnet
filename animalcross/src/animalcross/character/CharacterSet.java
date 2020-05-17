@@ -3,6 +3,7 @@ package animalcross.character;
 import java.io.File;
 import java.io.Serializable;
 
+import commom.itemInterface;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
@@ -10,7 +11,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 
-public abstract class CharacterSet implements Serializable {
+public abstract class CharacterSet implements Serializable, itemInterface {
 	private String name;
 	private ImageView img;
 	protected VBox model, bubbleSpeech, speechVBox;

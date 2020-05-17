@@ -7,7 +7,6 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 
-import animalcross.*;
 import commom.MessageComponent;
 
 public class ServerTest1 {
@@ -31,7 +30,7 @@ public class ServerTest1 {
 				serverthread.start();
 			} 
 		}catch (Exception e) {
-				e.printStackTrace();
+			e.printStackTrace();
 			
 		}
 	}

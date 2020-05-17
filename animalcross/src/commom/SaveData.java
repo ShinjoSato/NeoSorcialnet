@@ -3,28 +3,14 @@ package commom;
 import java.io.Serializable;
 
 public class SaveData implements Serializable{
-	private UserPrivacy userpriv;
+	private UserInfo userinfo;
 	private String ipaddress, portnumber; 
 	
-	public SaveData(UserPrivacy userpriv, String ipaddress, String portnumber) {
-		this.userpriv = userpriv;
+	public SaveData(UserInfo userinfo, String ipaddress, String portnumber) {
+		this.userinfo = userinfo;
 		this.ipaddress = ipaddress;
 		this.portnumber = portnumber;
 	}
 	
-	public UserPrivacy getUserPrivacy() {
-		return this.userpriv;
-	}
-	
-	public String getIPAddress() {
-		return this.ipaddress;
-	}
-	
-	public String getPortNumber() {
-		return this.portnumber;
-	}
-	
-	public String toString() {
-		return userpriv+", "+ipaddress+", "+portnumber;
-	}
+	public String toString() { return String.format("%s, %s, %s", userinfo, ipaddress, portnumber); }
 }

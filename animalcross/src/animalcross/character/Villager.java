@@ -10,7 +10,7 @@ public class Villager extends CharacterSet{
 	public Villager(String name, double x, double y) {
 		super(name, x, y);
 		this.charactername = "Villager";
-		model.getChildren().add(new ImageView(new File("./bin/animalcross/character/images/murabito_90x90.png").toURI().toString()));
+		model.getChildren().add(new ImageView(new File(img_url[5]).toURI().toString()));
 	}
 	
 	public Villager(String name) {

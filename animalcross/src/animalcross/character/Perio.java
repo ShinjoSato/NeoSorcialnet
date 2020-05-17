@@ -11,7 +11,7 @@ public class Perio  extends CharacterSet implements Serializable {
 	public Perio(String name, double x, double y) {
 		super(name, x, y);
 		this.charactername = "Perio";
-		model.getChildren().add(new ImageView(new File("./bin/animalcross/character/images/perio_106x90.png").toURI().toString()));
+		model.getChildren().add(new ImageView(new File(img_url[3]).toURI().toString()));
 	}
 	
 	public Perio(String name) {

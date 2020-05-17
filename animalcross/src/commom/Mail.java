@@ -14,7 +14,7 @@ import javax.mail.internet.MimeMessage;
 // Reference: https://www.youtube.com/watch?v=A7HAB5whD6I&t=14s
 public class Mail {
 	
-	public static void sendEMail(String sender, String password, String recepient, String subject, String text){
+	public void sendEMail(String sender, String password, String recepient, String subject, String text){
 		try {
 			Properties properties = new Properties();
 		

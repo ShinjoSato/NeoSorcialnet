@@ -3,12 +3,8 @@
 
 /animalcross/bin/
 /animalcross/data/
-/animalcross/lib/
-/animalcross/test/
 /animalcross/.settings
 /animalcross/.progect
 /animalcross/.gitignore
 /animalcross/.classpath
 /animalcross/.project
-
-/uml

@@ -24,10 +24,10 @@ public class MessageBoard extends Board {
 		return msg;
 	}
 	
-	public void setMessage(CharacterSet character, String message) {
-		Label name = (Label) character.getObject("name");
+	public void setMessage(String name, String message) {
+		Label nameLabel = new Label(name);
 		Label messageLabel = getMessageLabel(message);
-		HBox hbox = new HBox(name, messageLabel);
+		HBox hbox = new HBox(nameLabel, messageLabel);
 		
 		this.board.getChildren().add(hbox);
 	}

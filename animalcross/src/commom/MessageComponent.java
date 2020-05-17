@@ -49,7 +49,5 @@ public class MessageComponent implements Serializable{
 		return this.userinfo;
 	}
 	
-	public String toString() {
-		return "User:["+userinfo+"], MessageType: "+messagetype+", Message: "+message;
-	}
+	public String toString() { return String.format("User:[%d], MessageType:%s, Message:%s", userinfo, messagetype, message); }
 }

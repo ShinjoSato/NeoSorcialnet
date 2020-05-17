@@ -14,9 +14,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import com.interactivemesh.jfx.importer.ImportException;
-import com.interactivemesh.jfx.importer.obj.ObjModelImporter;
-
 import animalcross.character.CharacterSet;
 import animalcross.character.Sizue;
 import animalcross.character.Villager;
@@ -24,7 +21,6 @@ import commom.Mail;
 import commom.MessageComponent;
 import commom.SaveData;
 import commom.UserInfo;
-import commom.UserPrivacy;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -55,7 +51,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Sphere;
 import javafx.scene.layout.Pane;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -71,9 +66,13 @@ public class Main extends Application {
 	private static MessageBoard messageboard;
 	private static LogBoard logboard;
 	private TextArea text;
-	private String IPAddress, PORT, Email, EmailPass;
+	private String IPAddress = "10.114.205.7";
+	private String PORT = "50000";
 	private Socket socket;
 	protected static AnchorPane p;
+	
+	protected static Pane graphic2dPane;
+	
 	private HBox ipBox;
 	private boolean isLoggedIn;
 	 
@@ -82,20 +81,9 @@ public class Main extends Application {
 		System.out.println("----- main start -----");
 		isLoggedIn = false;
 		friendsset = new HashMap<String, CharacterSet>();
-		
-		System.out.println("----- load Save Data -----");
-		SaveData savedata = reloadSaveData();
-		System.out.println(savedata);
-		IPAddress = savedata.getIPAddress();
-		PORT = savedata.getPortNumber();
-		Email = savedata.getUserPrivacy().getEmail();
-		EmailPass = savedata.getUserPrivacy().getEmailPass();
 			
 		p = new AnchorPane();
 		p.setStyle("-fx-background-image: url(\"./animalcross/images/background.jpg\"); ");
-		
-		//Group group = new Group(p);
-		//Scene scene = new Scene(group, 500, 700);
 		Scene scene = new Scene(p, 500, 700);
 		scene.setOnKeyPressed(e -> {
 			try {keyPressed(e);} 
@@ -126,7 +114,7 @@ public class Main extends Application {
 			public void handle(KeyEvent ke) {
 				if (ke.getCode().equals(KeyCode.ENTER)) {
 				characterbox.setSpeech(text.getText());
-					if(!isLoggedIn) messageboard.setMessage(characterbox, text.getText());
+					if(!isLoggedIn) messageboard.setMessage(characterbox.getName(), text.getText());
 					else {
 						UserInfo userinfo = new UserInfo(characterbox.getName(), characterbox.getCharacterName());
 						sendMessageToServer( new MessageComponent(userinfo,  text.getText()) );
@@ -154,9 +142,12 @@ public class Main extends Application {
 		button.setOnAction(act -> showBox(inputTextHBox));
 		textHBox.getChildren().add(button);
 		
+		Pane graphic2dPane = new Pane();
+		//graphic2dPane.getChildren().addAll(characterbox.getModel());
 		
 		p.getChildren().addAll(
 			characterbox.getModel(),
+			//graphic2dPane,
 			createIPAddressInput(IPAddress, PORT, "Shinjo"),
 			getMenuBar(),
 			logboardVBox,
@@ -166,10 +157,13 @@ public class Main extends Application {
 		);
 		
 		//createOtherStage(logboardVBox, 100,100);
-		//UserInfo userinfo = new UserInfo("Shinjo", "Sizue");
-		//saveData(new UserPrivacy(userinfo, Email, EmailPass), IPAddress, PORT);
+		saveData();
+		reloadSaveData();
 	}
 	
+	/**
+	 * 
+	 */
 	public void createOtherStage(VBox vbox, double width, double height) {
 		Pane pane = new AnchorPane();
 		pane.getChildren().add(vbox);
@@ -210,6 +204,7 @@ public class Main extends Application {
 		System.out.println("renewCharacter");
 		double x = characterbox.getX(), y = characterbox.getY();
 		p.getChildren().remove(characterbox.getModel());
+		//graphic2dPane.getChildren().remove(characterbox.getModel());
 
 		switch(character) {
 			case "Villager": 	characterbox = new Villager(username); 	break;
@@ -218,6 +213,7 @@ public class Main extends Application {
 		
 		characterbox.setPoint(x, y);
 		p.getChildren().add(characterbox.getModel());
+		//graphic2dPane.getChildren().add(characterbox.getModel());
 		
 		if(isLoggedIn) {
 			UserInfo userinfo = new UserInfo(characterbox.getName(), characterbox.getCharacterName());
@@ -299,6 +295,7 @@ public class Main extends Application {
 	}
 		
 	public HBox createIPAddressInput(String ipaddress, String portnumber, String username) {
+		System.out.println("----- createIPAddressInput -----");
 		Label username_label = new Label("User Name");
 		TextField userName = new TextField(username);
 		HBox usernameHBox = new HBox(username_label, userName);
@@ -322,10 +319,11 @@ public class Main extends Application {
 		serverButton.setOnAction(e -> connectToServer(ipText.getText(), portNumber.getText(), userName.getText()));
 			
 		Button showIpText = new Button();
+		showIpText.setOnAction(e -> connectToServer(ipText.getText(), portNumber.getText(), userName.getText()));
 		showIpText.setPrefSize(40, 40);
 		showIpText.setStyle("-fx-background-color: none; -fx-background-image: url(\"./animalcross/images/icon_ipaddress_40x40.png\"); -fx-background-repeat: no-repeat;");
 		HBox ipHBox = new HBox(inputVBox, serverButton);
-		showIpText.setOnAction(e -> showBox(ipHBox));
+		//showIpText.setOnAction(e -> showBox(ipHBox));
 		ipBox = new HBox(ipHBox, showIpText);
 		
 		/**
@@ -366,11 +364,11 @@ public class Main extends Application {
 		 * Mail Input
 		 */
 		Label senderLabel = new Label("Sender:");
-		TextField senderField = new TextField(Email);
+		TextField senderField = new TextField("shinjo.software@gmail.com");
 		HBox senderHBox = new HBox(senderLabel, senderField);
 		
 		Label passLabel = new Label("Password:");
-		TextField passField = new TextField(EmailPass);
+		TextField passField = new TextField("Zxcvbnm12345sato");
 		HBox passHBox = new HBox(passLabel, passField);
 		
 		
@@ -388,9 +386,9 @@ public class Main extends Application {
 		HBox messageHBox = new HBox(messageLabel, messageText);
 		
 		Button mailButton = new Button("mail");
-		mailButton.setOnAction(e -> {
+		/*mailButton.setOnAction(e -> {
 			Mail.sendEMail(senderField.getText(), passField.getText(), addressField.getText(), subjectField.getText(), messageText.getText());
-		});
+		});*/
 		HBox buttonHBox = new HBox(mailButton);
 		buttonHBox.setAlignment(Pos.CENTER_RIGHT);
 		VBox mailVBox = new VBox(senderHBox, passHBox, addressHBox, subjectHBox, messageHBox, buttonHBox);
@@ -412,7 +410,7 @@ public class Main extends Application {
 			@Override
 			public void run() {
 				p.getChildren().add( friendsset.get((String)message.getObject("Sender")).getModel() );
-				//p.getChildren().add( (VBox)friendsset.get((String)message.getObject("Sender")).getObject("Model") );
+				//graphic2dPane.getChildren().add( friendsset.get((String)message.getObject("Sender")).getModel() );
 			}
 		});
 	}
@@ -445,6 +443,7 @@ public class Main extends Application {
     	    @Override
     	    public void run() {
     	    	p.getChildren().remove(friendVBox);
+    	    	//graphic2dPane.getChildren().remove(friendVBox);
     	    }
 		});
 		friendsset.remove(friend);
@@ -463,31 +462,31 @@ public class Main extends Application {
 		}
 	}
 	
-	public static void saveData(UserPrivacy userpriv, String ipAddress, String portNumber) {
-		try(FileOutputStream f = new FileOutputStream("data/userdata.dat");
+	public static void saveData() {
+		try(FileOutputStream f = new FileOutputStream("data/renshu.dat");
 			BufferedOutputStream b = new BufferedOutputStream(f);
 			ObjectOutputStream out = new ObjectOutputStream(b)){
 	 
-			SaveData savedata = new SaveData(userpriv, ipAddress, portNumber);
+			SaveData savedata = new SaveData(new UserInfo("UserName", "User Character"), "user ip address", "user port Number");
 			out.writeObject(savedata);
 		} catch ( IOException e ) {
 			e.printStackTrace();
 		}
+		System.out.println("saveData()");
 	}
 	
-	public static SaveData reloadSaveData() {
-		try(FileInputStream f = new FileInputStream("data/userdata.dat");
+	public static void reloadSaveData() {
+		try(FileInputStream f = new FileInputStream("data/renshu.dat");
 			BufferedInputStream b = new BufferedInputStream(f);
 			ObjectInputStream in = new ObjectInputStream(b)){
 	 
 			SaveData savedata = (SaveData) in.readObject();
-			return savedata;
+	 
+			System.out.println(savedata);
 		} catch ( IOException e ) {
 			e.printStackTrace();
 		} catch (ClassNotFoundException e) {
 			e.printStackTrace();
 		}
-		return null;
 	}
-
 }

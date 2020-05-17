@@ -19,7 +19,5 @@ public class UserInfo implements Serializable{
 		return this.character;
 	}
 	
-	public String toString() {
-		return "Name: "+name+", Character: "+character;
-	}
+	public String toString() { return  String.format("Name: %s, Character: %s", name, character); }
 }

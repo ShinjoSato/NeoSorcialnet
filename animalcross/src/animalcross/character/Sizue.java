@@ -11,7 +11,7 @@ public class Sizue extends CharacterSet implements Serializable {
 	public Sizue(String name, double x, double y) {
 		super(name, x, y);
 		this.charactername = "Sizue";
-		model.getChildren().add(new ImageView(new File("./bin/animalcross/character/images/sizue_53x90.png").toURI().toString()));
+		model.getChildren().add(new ImageView(new File(img_url[4]).toURI().toString()));
 	}
 	
 	public Sizue(String name) {
