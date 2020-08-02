@@ -1,51 +1,56 @@
-#  :hatched_chick: :girl: Welcome to my Neo Sorcial Network Service!! :boy: :rooster:
+# New design of Social Network Service
 
-![welcome to my animal village](images/overview-beforelogin.png)
+University of Birmingham 
 
-## Data
+Shinjo Sato
 
-- Author・・・　Shinjo Sato
 
-- Version・・・1.0
+## Introduction
+The application will become like a social network service such as Facebook. The characteristic will be that not only chat with others but also handle an avatar and hang around the 3d graphic world. This is not my thesis but my private project.
 
-- Date・・・2020-04-01
+## Chance to do this Project
 
-- Language・・・Java
+When I started creating this app on 27th March 2020, people in the globe cannot go outside except a few situations because of COVID-19. Under the situation, people need the way to communicate with each other, so that’s why I make use of what I have learned in University and introduce the way.
 
-- IDE・・・Eclipse
+## Difference between other SNS
 
-- Framework, Library・・・JavaFX
+![](images/window0.png)
 
-- Tools・・・Git
+In this app, people can handle the main character with the keyboard; communicate by texting when connecting the server. On famous social network services such as Twitter, Facebook and LINE, texting is the mainstream to communication. But, in the future, visual technology like VR or AR will be more developed and common, so I add texting with visualization to the application. By adding
+visuality, people can communicate not only by texting but also the character’s movement. User can move back and forth, left and right and turn left and right.
+ 
+## Progress
 
-- OS・・・Mac OS
+I have tested one-to-one communication by using my laptop as a client and Amazon Lightsail as a server. First I execute the server, second execute two client programs in parallel, third enter the server’s IP address and the port number on each client programs and connect to the server if both the IP address and the port number are correct.
+## Set up
+1. Launch the application.
 
-## Overview
+    ![](images/window1.png)
 
-### Moving an avatar
+    When executing the main file, the main window appears on the screen, then you can start the application by pushing the start button on the window.
 
-After launching this application, we can see the character in the centre of the window, which is an avatar of the user, and we can manipulate it by cursor movement key.
+2. Open the main screen
 
-![manipulate an avatar](images/avatar.png)
+    ![](images/window2.png)
 
-### Connecting a server
+    When starting the application, 3d graphics appear and you can move the main character and a camera. By pushing some key buttons, some of the user interfaces appear on the window. In this situation, you can handle your avatar.
 
-In this application, users can communicate with each other by texting and moving our avatars.
+3. Connect to the server
 
-First, before playing this app, we need to connect the same server. At the top right of the screen, we can see the IP address icon. When the user pushes the icon, a raccoon and three input areas: user name, IP address and Port number appear on the left side of the icon, then push it again, these areas disappear.
+    On the left top of the window, there are three text-fields and you can input user name, IP address and port number. If the pair of the IP address and port number is the same with those of prepared server, you can permit to connect it.
 
-![server icon before login](images/ipaddress&username_before.png)
+   - If there are already other users connecting to the server, their main characters appear on your screen then they move by users' manipulation.
 
-After filling in these input area appropriate then pushing the raccoon, users can connect the server and rename the avatar, then these areas disappear, which never show up　even if users push the icon again, and a mole with IP address and user name appear on the right side of the window.
+## Communication with others
 
-![server icon after login](images/ipaddress&username_after.png)
+![](images/window3.png)
 
-### Texting (with friends)
+If you and other users connect to the server, you can chat with each other.
 
-On the bottom of the window, as you can see, there is twin raccoon. By clicking this character icon, the text field appears on the left side and the user can input texts.
+- Speech bubble
 
-![chatting gui](images/textinput.png)
+  When you write and send a message, the speech bubble appears above your main character such as cartoons, then other users can see it. For example, on the above picture, Shinjo send “Hello!” to the server, the server distributes it to other users then the message appears.
 
-By pushing the enter button, users can send the server a message then Log Board, Message Board and a bubble speech on the avatar are updated. If there were other users on the same server, their screen is updated at the same time.
+- Chatting by board
 
-When pushing the character again, the textarea will disappear.
+  On the bottom right side of the window, there is a board, which shows users' messages. For example, in the above picture, the message from Shinjo is shown.
